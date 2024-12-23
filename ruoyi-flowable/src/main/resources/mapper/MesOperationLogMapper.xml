@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesOperationLogMapper">
+    
+    <resultMap type="MesOperationLog" id="MesOperationLogResult">
+        <result property="id"    column="id"    />
+        <result property="systemModule"    column="system_module"    />
+        <result property="fullDate"    column="full_date"    />
+        <result property="year"    column="year"    />
+        <result property="month"    column="month"    />
+        <result property="weekOfYear"    column="week_of_year"    />
+        <result property="problemName"    column="problem_name"    />
+        <result property="factory"    column="factory"    />
+        <result property="requirementUser"    column="requirement_user"    />
+        <result property="problemType"    column="problem_type"    />
+        <result property="problemDesc"    column="problem_desc"   typeHandler="com.ruoyi.flowable.common.typehandler.Fastjson2TypeHandler" />
+        <result property="times"    column="times"    />
+        <result property="rootCause"    column="root_cause"    />
+        <result property="temporaryMeasures"    column="temporary_measures"    />
+        <result property="longTermMeasures"    column="long_term_measures"    />
+        <result property="responsiblePerson"    column="responsible_person"    />
+        <result property="followUpMatters"    column="follow_up_matters"    />
+        <result property="deliveryTime"    column="delivery_time"    />
+        <result property="status"    column="status"    />
+        <result property="car"    column="car"    />
+        <result property="docUrl"    column="doc_url"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUid"    column="create_uid"    />
+        <result property="createUname"    column="create_uname"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUid"    column="update_uid"    />
+        <result property="updateUname"    column="update_uname"    />
+    </resultMap>
+
+    <sql id="selectMesOperationLogVo">
+        select id, system_module, full_date, year, month, week_of_year, problem_name, factory, requirement_user, problem_type, problem_desc, times, root_cause, temporary_measures, long_term_measures, responsible_person, follow_up_matters, delivery_time, status, car, doc_url, remark, create_time, create_uid, create_uname, update_time, update_uid, update_uname from mes_operation_log
+    </sql>
+
+    <select id="selectMesOperationLogList" parameterType="MesOperationLog" resultMap="MesOperationLogResult">
+        <include refid="selectMesOperationLogVo"/>
+        <where>  
+            <if test="systemModule != null  and systemModule != ''"> and system_module = #{systemModule}</if>
+            <if test="beginTime != null "> and full_date between #{beginTime} and #{endTime}</if>
+            <if test="year != null "> and year = #{year}</if>
+            <if test="month != null "> and month = #{month}</if>
+            <if test="weekOfYear != null "> and week_of_year = #{weekOfYear}</if>
+            <if test="problemName != null  and problemName != ''"> and problem_name like concat('%', #{problemName}, '%')</if>
+            <if test="factory != null  and factory != ''"> and factory = #{factory}</if>
+            <if test="requirementUser != null  and requirementUser != ''"> and requirement_user = #{requirementUser}</if>
+            <if test="problemType != null  and problemType != ''"> and problem_type = #{problemType}</if>
+            <if test="times != null "> and times = #{times}</if>
+            <if test="rootCause != null  and rootCause != ''"> and root_cause = #{rootCause}</if>
+            <if test="temporaryMeasures != null  and temporaryMeasures != ''"> and temporary_measures = #{temporaryMeasures}</if>
+            <if test="longTermMeasures != null  and longTermMeasures != ''"> and long_term_measures = #{longTermMeasures}</if>
+            <if test="responsiblePerson != null  and responsiblePerson != ''"> and responsible_person = #{responsiblePerson}</if>
+            <if test="followUpMatters != null  and followUpMatters != ''"> and follow_up_matters = #{followUpMatters}</if>
+            <if test="deliveryTime != null "> and delivery_time = #{deliveryTime}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="car != null  and CAR != ''"> and car = #{car}</if>
+            <if test="docUrl != null  and docUrl != ''"> and doc_url = #{docUrl}</if>
+            <if test="createUid != null  and createUid != ''"> and create_uid = #{createUid}</if>
+            <if test="createUname != null  and createUname != ''"> and create_uname like concat('%', #{createUname}, '%')</if>
+            <if test="updateUid != null  and updateUid != ''"> and update_uid = #{updateUid}</if>
+            <if test="updateUname != null  and updateUname != ''"> and update_uname like concat('%', #{updateUname}, '%')</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <select id="selectMesOperationLogById" parameterType="Long" resultMap="MesOperationLogResult">
+        <include refid="selectMesOperationLogVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectCountByDimension" resultType="com.ruoyi.flowable.domain.dto.MesOperationLog">
+        select ${dimensionName} as dimension_name, sum(times) as count from mes_operation_log
+        <where>
+            <if test="systemModule != null  and systemModule != '' and dimensionName != 'system_module'"> and system_module = #{systemModule}</if>
+            <if test="beginTime != null "> and full_date between #{beginTime} and #{endTime}</if>
+            <if test="year != null "> and year = #{year}</if>
+            <if test="month != null "> and month = #{month}</if>
+            <if test="weekOfYear != null "> and week_of_year = #{weekOfYear}</if>
+            <if test="factory != null  and factory != '' and dimensionName != 'factory'"> and factory = #{factory}</if>
+            <if test="requirementUser != null  and requirementUser != ''"> and requirement_user = #{requirementUser}</if>
+            <if test="problemType != null  and problemType != '' and dimensionName != 'problem_type'"> and problem_type = #{problemType}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+        group by ${dimensionName}
+    </select>
+
+    <delete id="deleteMesOperationLogByIds" parameterType="String">
+        delete from mes_operation_log where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

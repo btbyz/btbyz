@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesReleaseLogMapper">
+
+    <resultMap type="com.ruoyi.flowable.domain.dto.MesReleaseLog" id="MesReleaseLogResult">
+        <result property="releaseVersion"    column="release_version"    />
+        <result property="applyDate"    column="apply_date"    />
+        <result property="applyUname"    column="apply_uname"    />
+        <result property="applyUid"    column="apply_uid"    />
+        <result property="status"    column="status"    />
+        <result property="releaseDescInfo"    column="release_desc_info"    />
+        <result property="projectLeader"    column="project_leader"    />
+        <result property="projectLeaderApprovalMark"    column="project_leader_approval_mark"    />
+        <result property="projectLeaderApprovalTime"    column="project_leader_approval_time"    />
+        <result property="projectLeaderApprovalRemark"    column="project_leader_approval_remark"    />
+        <result property="productLeader"    column="product_leader"    />
+        <result property="productLeaderApprovalMark"    column="product_leader_approval_mark"    />
+        <result property="productLeaderApprovalTime"    column="product_leader_approval_time"    />
+        <result property="productLeaderApprovalRemark"    column="product_leader_approval_remark"    />
+        <result property="deptLeader"    column="dept_leader"    />
+        <result property="deptLeaderApprovalMark"    column="dept_leader_approval_mark"    />
+        <result property="deptLeaderApprovalTime"    column="dept_leader_approval_time"    />
+        <result property="deptLeaderApprovalRemark"    column="dept_leader_approval_remark"    />
+        <result property="finishTime"    column="finish_time"    />
+        <result property="createUid"    column="create_uid"    />
+        <result property="createUname"    column="create_uname"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUid"    column="update_uid"    />
+        <result property="updateUname"    column="update_uname"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMesReleaseLogVo">
+        select release_version, apply_date, apply_uname, apply_uid, status, release_desc_info, project_leader, project_leader_approval_mark, project_leader_approval_time, project_leader_approval_remark, product_leader, product_leader_approval_mark, product_leader_approval_time, product_leader_approval_remark, dept_leader, dept_leader_approval_mark, dept_leader_approval_time, dept_leader_approval_remark, finish_time, create_uid, create_uname, create_time, update_uid, update_uname, update_time from mes_release_log
+    </sql>
+
+    <select id="selectMesReleaseLogList" parameterType="com.ruoyi.flowable.domain.dto.MesReleaseLog" resultMap="MesReleaseLogResult">
+        <include refid="selectMesReleaseLogVo"/>
+        <where>
+            <if test="applyDate != null "> and apply_date = #{applyDate}</if>
+            <if test="applyUname != null  and applyUname != ''"> and apply_uname like concat('%', #{applyUname}, '%')</if>
+            <if test="applyUid != null  and applyUid != ''"> and apply_uid = #{applyUid}</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+            <if test="releaseDescInfo != null  and releaseDescInfo != ''"> and release_desc_info = #{releaseDescInfo}</if>
+            <if test="projectLeader != null  and projectLeader != ''"> and project_leader = #{projectLeader}</if>
+            <if test="projectLeaderApprovalMark != null  and projectLeaderApprovalMark != ''"> and project_leader_approval_mark = #{projectLeaderApprovalMark}</if>
+            <if test="projectLeaderApprovalTime != null "> and project_leader_approval_time = #{projectLeaderApprovalTime}</if>
+            <if test="projectLeaderApprovalRemark != null  and projectLeaderApprovalRemark != ''"> and project_leader_approval_remark = #{projectLeaderApprovalRemark}</if>
+            <if test="productLeader != null  and productLeader != ''"> and product_leader = #{productLeader}</if>
+            <if test="productLeaderApprovalMark != null  and productLeaderApprovalMark != ''"> and product_leader_approval_mark = #{productLeaderApprovalMark}</if>
+            <if test="productLeaderApprovalTime != null "> and product_leader_approval_time = #{productLeaderApprovalTime}</if>
+            <if test="productLeaderApprovalRemark != null  and productLeaderApprovalRemark != ''"> and product_leader_approval_remark = #{productLeaderApprovalRemark}</if>
+            <if test="deptLeader != null  and deptLeader != ''"> and dept_leader = #{deptLeader}</if>
+            <if test="deptLeaderApprovalMark != null  and deptLeaderApprovalMark != ''"> and dept_leader_approval_mark = #{deptLeaderApprovalMark}</if>
+            <if test="deptLeaderApprovalTime != null "> and dept_leader_approval_time = #{deptLeaderApprovalTime}</if>
+            <if test="deptLeaderApprovalRemark != null  and deptLeaderApprovalRemark != ''"> and dept_leader_approval_remark = #{deptLeaderApprovalRemark}</if>
+            <if test="finishTime != null "> and finish_time = #{finishTime}</if>
+        </where>
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(1) from mes_release_log
+        <where>
+            <if test="year != null and year != ''"> and year = #{year}</if>
+            <if test="month != null and month != ''"> and month = #{month}</if>
+        </where>
+    </select>
+
+</mapper>

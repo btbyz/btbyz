@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.flowable.mapper.MesProjectMapper">
+
+        <resultMap type="com.ruoyi.flowable.domain.dto.MesProject" id="MesProjectResult">
+            <result property="projectCode"    column="project_code"    />
+            <result property="projectName"    column="project_name"    />
+            <result property="projectDesc"    column="project_desc"    />
+            <result property="projectOaId"    column="project_oa_id"    />
+            <result property="status"    column="status"    />
+            <result property="releaseVersion"    column="release_version"    />
+            <result property="projectUser"    column="project_user"    />
+            <result property="income"    column="income"    />
+            <result property="projectDocUrl"    column="project_doc_url"    />
+            <result property="createTime"    column="create_time"    />
+            <result property="createUid"    column="create_uid"    />
+            <result property="createUname"    column="create_uname"    />
+            <result property="updateTime"    column="update_time"    />
+            <result property="updateUid"    column="update_uid"    />
+            <result property="updateUname"    column="update_uname"    />
+            <result property="systemModule"    column="system_module"    />
+            <result property="projectDept"    column="project_dept"    />
+            <result property="beginTime"    column="begin_time"    />
+            <result property="endTime"    column="end_time"    />
+            <result property="assignPerson"    column="assign_person"    />
+            <result property="permissionFlag"    column="permission_flag"    />
+            <result property="deptId"    column="dept_id"    />
+            <result property="factoryCode"    column="factory_code"    />
+            <result property="actualBeginTime" column="actual_begin_time"   />
+            <result property="actualEndTime"   column="actual_end_time"   />
+            <result property="deliveryStatus"   column="delivery_status"   />
+        </resultMap>
+
+        <sql id="selectMesProjectVo">
+            select project_code, project_name, project_desc, project_oa_id, status, release_version, project_user, income, project_doc_url, create_time, create_uid, create_uname, update_time, update_uid, update_uname, system_module, project_dept, begin_time, end_time, assign_person, permission_flag, dept_id, factory_code, actual_begin_time, actual_end_time, delivery_status from mes_project
+        </sql>
+
+        <select id="selectMesProjectList" parameterType="com.ruoyi.flowable.domain.dto.MesProject" resultMap="MesProjectResult">
+            <include refid="selectMesProjectVo"/>
+            <where>
+                <if test="projectCode != null  and projectCode != ''"> and project_code like concat('%', #{projectCode}, '%')</if>
+                <if test="projectName != null  and projectName != ''"> and project_name like concat('%', #{projectName}, '%')</if>
+                <if test="projectDesc != null  and projectDesc != ''"> and project_desc = #{projectDesc}</if>
+                <if test="projectOaId != null  and projectOaId != ''"> and project_oa_id = #{projectOaId}</if>
+                <if test="status != null  and status != ''"> and status = #{status}</if>
+                <if test="releaseVersion != null  and releaseVersion != ''"> and release_version = #{releaseVersion}</if>
+                <if test="projectUser != null  and projectUser != ''"> and project_user = #{projectUser}</if>
+                <if test="income != null  and income != ''"> and income = #{income}</if>
+                <if test="projectDocUrl != null  and projectDocUrl != ''"> and project_doc_url = #{projectDocUrl}</if>
+                <if test="createUid != null  and createUid != ''"> and create_uid = #{createUid}</if>
+                <if test="createUname != null  and createUname != ''"> and create_uname like concat('%', #{createUname}, '%')</if>
+                <if test="updateUid != null  and updateUid != ''"> and update_uid = #{updateUid}</if>
+                <if test="updateUname != null  and updateUname != ''"> and update_uname like concat('%', #{updateUname}, '%')</if>
+                <if test="systemModule != null  and systemModule != ''"> and system_module = #{systemModule}</if>
+                <if test="projectDept != null  and projectDept != ''"> and project_dept = #{projectDept}</if>
+                <if test="beginTime != null "> and begin_time = #{beginTime}</if>
+                <if test="endTime != null "> and end_time = #{endTime}</if>
+                <if test="assignPerson != null  and assignPerson != ''"> and assign_person = #{assignPerson}</if>
+                <if test="permissionFlag != null  and permissionFlag != ''"> and permission_flag = #{permissionFlag}</if>
+                <if test="deptId != null "> and dept_id = #{deptId}</if>
+                <if test="factoryCode != null  and factoryCode != ''"> and factory_code = #{factoryCode}</if>
+                <if test="deliveryStatus != null  and deliveryStatus != ''"> and delivery_status = #{deliveryStatus}</if>
+            </where>
+            order by begin_time desc, end_time desc
+        </select>
+
+    <select id="countByName" resultType="int">
+        select count(1) from mes_project
+        <where>
+            project_name = #{projectName}
+            <if test="projectCode != null and projectCode != ''"> and project_code != #{projectCode}</if>
+        </where>
+    </select>
+
+    <update id="updateMesProjectById">
+        update mes_project
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="projectName != null">project_name = #{projectName},</if>
+            <if test="projectDesc != null">project_desc = #{projectDesc},</if>
+            <if test="projectOaId != null">project_oa_id = #{projectOaId},</if>
+            <if test="status != null and status != ''">status = #{status},</if>
+            <if test="releaseVersion != null">release_version = #{releaseVersion},</if>
+            <if test="projectUser != null">project_user = #{projectUser},</if>
+            <if test="income != null">income = #{income},</if>
+            <if test="projectDocUrl != null">project_doc_url = #{projectDocUrl},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createUid != null">create_uid = #{createUid},</if>
+            <if test="createUname != null">create_uname = #{createUname},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUid != null">update_uid = #{updateUid},</if>
+            <if test="updateUname != null">update_uname = #{updateUname},</if>
+            <if test="systemModule != null">system_module = #{systemModule},</if>
+            <if test="projectDept != null">project_dept = #{projectDept},</if>
+            <if test="beginTime != null">begin_time = #{beginTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="assignPerson != null">assign_person = #{assignPerson},</if>
+            <if test="permissionFlag != null">permission_flag = #{permissionFlag},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="factoryCode != null">factory_code = #{factoryCode},</if>
+            <if test="actualBeginTime != null">actual_begin_time = #{actualBeginTime},</if>
+            <if test="actualEndTime != null">actual_end_time = #{actualEndTime},</if>
+            <if test="deliveryStatus != null and deliveryStatus != ''">delivery_status = #{deliveryStatus},</if>
+        </trim>
+        where project_code = #{projectCode}
+    </update>
+
+    <select id="selectOneByRequirementCodeDesc" resultMap="MesProjectResult">
+        <include refid="selectMesProjectVo"/>
+        order by project_code desc limit 1
+    </select>
+
+</mapper>

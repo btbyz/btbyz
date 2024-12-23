@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesProjectRecordsMapper">
+    
+    <resultMap type="MesProjectRecords" id="MesProjectRecordsResult">
+        <result property="factoryArea"    column="factory_area"    />
+        <result property="module"    column="module"    />
+        <result property="project"    column="project"    />
+        <result property="developers"    column="developers"    />
+        <result property="user"    column="user"    />
+        <result property="importantLevel"    column="important_level"    />
+        <result property="urgencyLevel"    column="urgency_level"    />
+        <result property="income"    column="income"    />
+        <result property="monthlyUsageFrequency"    column="monthly_usage_frequency"    />
+        <result property="personalTesting"    column="personal_testing"    />
+        <result property="oaNumber"    column="oa_number"    />
+        <result property="date"    column="date"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="version"    column="version"    />
+    </resultMap>
+
+
+    <sql id="selectMesProjectRecordsVo">
+        select id,factory_area, module, project, developers, user, important_level, urgency_level, income, monthly_usage_frequency, personal_testing, oa_number, date, create_time, create_by, update_time, update_by,state, version from mes_project_records
+    </sql>
+    <select id="selectMesProjectRecordsById" parameterType="String" resultMap="MesProjectRecordsResult">
+        <include refid="selectMesProjectRecordsVo"/>
+        where id = #{id}
+    </select>
+    <select id="selectMesProjectRecordsList" parameterType="MesProjectRecords" resultMap="MesProjectRecordsResult">
+        <include refid="selectMesProjectRecordsVo"/>
+        <where>  
+            <if test="factoryArea != null  and factoryArea != ''"> and factory_area = #{factoryArea}</if>
+            <if test="module != null  and module != ''"> and module = #{module}</if>
+            <if test="project != null  and project != ''"> and project = #{project}</if>
+            <if test="developers != null  and developers != ''"> and developers = #{developers}</if>
+            <if test="user != null  and user != ''"> and user = #{user}</if>
+            <if test="importantLevel != null  and importantLevel != ''"> and important_level = #{importantLevel}</if>
+            <if test="urgencyLevel != null  and urgencyLevel != ''"> and urgency_level = #{urgencyLevel}</if>
+            <if test="income != null  and income != ''"> and income = #{income}</if>
+            <if test="monthlyUsageFrequency != null  and monthlyUsageFrequency != ''"> and monthly_usage_frequency = #{monthlyUsageFrequency}</if>
+            <if test="personalTesting != null  and personalTesting != ''"> and personal_testing = #{personalTesting}</if>
+            <if test="oaNumber != null  and oaNumber != ''"> and oa_number = #{oaNumber}</if>
+            <if test="date != null  and date != ''"> and date = #{date}</if>
+            <if test="state != null  and state != ''"> and state = #{state}</if>
+            <if test="version != null  and version != ''"> and version = #{version}</if>
+        </where>
+    </select>
+    <insert id="insertMesProjectRecords" parameterType="MesProjectRecords" useGeneratedKeys="true" keyProperty="id">
+        insert into mes_project_records
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="factoryArea != null">factory_area,</if>
+            <if test="module != null">module,</if>
+            <if test="project != null">project,</if>
+            <if test="developers != null">developers,</if>
+            <if test="user != null">user,</if>
+            <if test="importantLevel != null">important_level,</if>
+            <if test="urgencyLevel != null">urgency_level,</if>
+            <if test="income != null">income,</if>
+            <if test="monthlyUsageFrequency != null">monthly_usage_frequency,</if>
+            <if test="personalTesting != null">personal_testing,</if>
+            <if test="oaNumber != null">oa_number,</if>
+            <if test="date != null">date,</if>
+            <if test="state != null">state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="factoryArea != null">#{factoryArea},</if>
+            <if test="module != null">#{module},</if>
+            <if test="project != null">#{project},</if>
+            <if test="developers != null">#{developers},</if>
+            <if test="user != null">#{user},</if>
+            <if test="importantLevel != null">#{importantLevel},</if>
+            <if test="urgencyLevel != null">#{urgencyLevel},</if>
+            <if test="income != null">#{income},</if>
+            <if test="monthlyUsageFrequency != null">#{monthlyUsageFrequency},</if>
+            <if test="personalTesting != null">#{personalTesting},</if>
+            <if test="oaNumber != null">#{oaNumber},</if>
+            <if test="date != null">#{date},</if>
+            <if test="state != null">#{state},</if>
+
+        </trim>
+    </insert>
+    <update id="updateMesProjectRecords" parameterType="MesProjectRecords">
+        update mes_project_records
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="factoryArea != null ">factory_area = #{factoryArea},</if>
+            <if test="module != null">module = #{module},</if>
+            <if test="project != null">project = #{project},</if>
+            <if test="developers != null">developers = #{developers},</if>
+            <if test="user != null">user = #{user},</if>
+            <if test="importantLevel != null">important_level = #{importantLevel},</if>
+            <if test="urgencyLevel != null">urgency_level = #{urgencyLevel},</if>
+            <if test="income != null">income = #{income},</if>
+            <if test="monthlyUsageFrequency != null">monthly_usage_frequency = #{monthlyUsageFrequency},</if>
+            <if test="personalTesting != null">personal_testing = #{personalTesting},</if>
+            <if test="oaNumber != null">oa_number = #{oaNumber},</if>
+            <if test="date != null">date = #{date},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="version != null and version != ''">version = #{version},</if>
+        </trim>
+        where id = #{id}
+    </update>
+    <delete id="deleteMesProjectRecords" parameterType="String">
+        delete from mes_project_records where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getMesProjectRecordsList" parameterType="long" resultMap="MesProjectRecordsResult">
+        <include refid="selectMesProjectRecordsVo"/>
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

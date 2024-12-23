@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesProcessReleaseLogMapper">
+
+    <resultMap type="MesProcessReleaseLog" id="MesProcessReleaseLogResult">
+        <result property="id"    column="id"    />
+        <result property="version"    column="version"    />
+        <result property="releaseDimension"    column="release_dimension"    />
+        <result property="releaseContent"    column="release_content"    />
+        <result property="status"    column="status"    />
+        <result property="createUid"    column="create_uid"    />
+        <result property="createUname"    column="create_uname"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUid"    column="update_uid"    />
+        <result property="updateUname"    column="update_uname"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="year"    column="year"    />
+        <result property="month"    column="month"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectMesProcessReleaseLogVo">
+        select id, version, release_dimension, release_content, status, create_uid, create_uname, create_time, update_uid, update_uname, update_time, year, month
+        from mes_process_release_log
+    </sql>
+
+    <select id="selectMesProcessReleaseLogList" parameterType="MesProcessReleaseLog" resultMap="MesProcessReleaseLogResult">
+            <include refid="selectMesProcessReleaseLogVo"/>
+            <where>
+                <if test="version != null and version != ''"> and version = #{version}</if>
+                 <if test="releaseDimension != null  and releaseDimension != ''"> and release_dimension = #{releaseDimension}</if>
+                 <if test="releaseContent != null  and releaseContent != ''"> and release_content = #{releaseContent}</if>
+                 <if test="status != null  and status != ''"> and status = #{status}</if>
+                 <if test="createUid != null and createUid != ''"> and create_uid = #{createUid}</if>
+                 <if test="createUname != null and createUname != ''"> and create_uname = #{createUname}</if>
+                 <if test="createTime != null "> and create_time = #{createTime}</if>
+                 <if test="updateUid != null and updateUid != ''"> and update_uid = #{updateUid}</if>
+                 <if test="updateUname != null  and updateUname != ''"> and update_uname = #{updateUname}</if>
+                 <if test="updateTime != null "> and update_time = #{updateTime}</if>
+                 <if test="year != null "> and year = #{year}</if>
+                 <if test="month != null "> and month = #{month}</if>
+            </where>
+        order by id desc
+    </select>
+
+    <select id="selectMesProcessReleaseLogById" parameterType="Long" resultMap="MesProcessReleaseLogResult">
+        <include refid="selectMesProcessReleaseLogVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMesProcessReleaseLog" parameterType="MesProcessReleaseLog" useGeneratedKeys="true" keyProperty="id">
+        insert into mes_process_release_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="version != null  and version != ''">version,</if>
+            <if test="releaseDimension != null  and releaseDimension != ''">release_dimension,</if>
+            <if test="releaseContent != null  and releaseContent != ''">release_content,</if>
+            <if test="status != null  and status != ''">status,</if>
+            <if test="createUid != null and createUid != ''">create_uid,</if>
+            <if test="createUname != null  and createUname != ''">create_uname,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateUid != null and updateUid != ''">update_uid,</if>
+            <if test="updateUname != null  and updateUname != ''">update_uname,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="year != null ">year,</if>
+            <if test="month != null ">month,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="version != null  and version != ''">#{version},</if>
+            <if test="releaseDimension != null  and releaseDimension != ''">#{releaseDimension},</if>
+            <if test="releaseContent != null  and releaseContent != ''">#{releaseContent},</if>
+            <if test="status != null  and status != ''">#{status},</if>
+            <if test="createUid != null and createUid != ''">#{createUid},</if>
+            <if test="createUname != null  and createUname != ''">#{createUname},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateUid != null and updateUid != ''">#{updateUid},</if>
+            <if test="updateUname != null  and updateUname != ''">#{updateUname},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="year != null ">#{year},</if>
+            <if test="month != null ">#{month},</if>
+
+         </trim>
+    </insert>
+
+    <update id="updateMesProcessReleaseLog" parameterType="MesProcessReleaseLog">
+            update mes_process_release_log
+            <trim prefix="SET" suffixOverrides=",">
+                <if test="version != null  and version != ''">version = #{version},</if>
+                <if test="releaseDimension != null  and releaseDimension != ''">release_dimension = #{releaseDimension},</if>
+                <if test="releaseContent != null  and releaseContent != ''">release_content = #{releaseContent},</if>
+                <if test="status != null  and status != ''">status = #{status},</if>
+            </trim>
+            where id = #{id}
+    </update>
+
+    <delete id="deleteMesProcessReleaseLog" parameterType="long">
+        update mes_process_release_log set status = '1'
+        where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="getVersion" resultType="string">
+        select version from mes_process_release_log mprl order by id desc
+    </select>
+
+    <select id="getCount" resultType="long">
+        select count(1) count from mes_process_release_log mprl
+        where year = #{year} and month = #{month}
+    </select>
+</mapper>

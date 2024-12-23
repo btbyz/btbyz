@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesDimTdDateMapper">
+    
+    <resultMap type="MesDimTdDate" id="MesDimTdDateResult">
+        <result property="fullDate"    column="full_date"    />
+        <result property="dayOfWeek"    column="day_of_week"    />
+        <result property="dayNumInMonth"    column="day_num_in_month"    />
+        <result property="dayName"    column="day_name"    />
+        <result property="weekdayFlag"    column="weekday_flag"    />
+        <result property="weekNumInYear"    column="week_num_in_year"    />
+        <result property="weekBeginDate"    column="week_begin_date"    />
+        <result property="weekBeginDateKey"    column="week_begin_date_key"    />
+        <result property="month"    column="month"    />
+        <result property="monthName"    column="month_name"    />
+        <result property="quarter"    column="quarter"    />
+        <result property="year"    column="year"    />
+        <result property="lastDayInMonthFlag"    column="last_day_in_month_flag"    />
+        <result property="vacationDayFlag"    column="vacation_day_flag"    />
+        <result property="weekStrInYear"    column="week_str_in_year"    />
+        <result property="yearMonthStr"    column="year_month_str"    />
+        <result property="monthDayStr"    column="month_day_str"    />
+    </resultMap>
+
+    <sql id="selectMesDimTdDateVo">
+        select full_date, day_of_week, day_num_in_month, weekday_flag, week_num_in_year, week_begin_date, month, year, vacation_day_flag, week_str_in_year from mes_dim_td_date
+    </sql>
+
+    <select id="selectMesDimTdDateList" parameterType="MesDimTdDate" resultMap="MesDimTdDateResult">
+        <include refid="selectMesDimTdDateVo"/>
+        <where>
+            <if test="fullDate != null "> and full_date = #{fullDate}</if>
+            <if test="dayOfWeek != null "> and day_of_week = #{dayOfWeek}</if>
+            <if test="dayNumInMonth != null "> and day_num_in_month = #{dayNumInMonth}</if>
+            <if test="weekdayFlag != null  and weekdayFlag != ''"> and weekday_flag = #{weekdayFlag}</if>
+            <if test="weekNumInYear != null "> and week_num_in_year = #{weekNumInYear}</if>
+            <if test="weekBeginDate != null  and weekBeginDate != ''"> and week_begin_date = #{weekBeginDate}</if>
+            <if test="month != null "> and month = #{month}</if>
+            <if test="year != null "> and year = #{year}</if>
+            <if test="vacationDayFlag != null  and vacationDayFlag != ''"> and vacation_day_flag = #{vacationDayFlag}</if>
+            <if test="weekStrInYear != null  and weekStrInYear != ''"> and week_str_in_year = #{weekStrInYear}</if>
+        </where>
+    </select>
+    
+    <select id="selectMesDimTdDateByFullDate" parameterType="String" resultMap="MesDimTdDateResult">
+        <include refid="selectMesDimTdDateVo"/>
+        where full_date = #{fullDate}
+    </select>
+        
+    <insert id="insertMesDimTdDate" parameterType="MesDimTdDate">
+        insert into mes_dim_td_date
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fullDate != null">full_date,</if>
+            <if test="dayOfWeek != null">day_of_week,</if>
+            <if test="dayNumInMonth != null">day_num_in_month,</if>
+            <if test="weekdayFlag != null">weekday_flag,</if>
+            <if test="weekNumInYear != null">week_num_in_year,</if>
+            <if test="weekBeginDate != null">week_begin_date,</if>
+            <if test="month != null">month,</if>
+            <if test="year != null">year,</if>
+            <if test="vacationDayFlag != null">vacation_day_flag,</if>
+            <if test="monthDayStr != null">month_day_str,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fullDate != null">#{fullDate},</if>
+            <if test="dayOfWeek != null">#{dayOfWeek},</if>
+            <if test="dayNumInMonth != null">#{dayNumInMonth},</if>
+            <if test="weekdayFlag != null">#{weekdayFlag},</if>
+            <if test="weekNumInYear != null">#{weekNumInYear},</if>
+            <if test="weekBeginDate != null">#{weekBeginDate},</if>
+            <if test="month != null">#{month},</if>
+            <if test="year != null">#{year},</if>
+            <if test="vacationDayFlag != null">#{vacationDayFlag},</if>
+            <if test="monthDayStr != null">#{monthDayStr},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMesDimTdDate" parameterType="MesDimTdDate">
+        update mes_dim_td_date
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="dayOfWeek != null">day_of_week = #{dayOfWeek},</if>
+            <if test="dayNumInMonth != null">day_num_in_month = #{dayNumInMonth},</if>
+            <if test="weekdayFlag != null">weekday_flag = #{weekdayFlag},</if>
+            <if test="weekNumInYear != null">week_num_in_year = #{weekNumInYear},</if>
+            <if test="weekBeginDate != null">week_begin_date = #{weekBeginDate},</if>
+            <if test="month != null">month = #{month},</if>
+            <if test="year != null">year = #{year},</if>
+            <if test="vacationDayFlag != null">vacation_day_flag = #{vacationDayFlag},</if>
+            <if test="monthDayStr != null">month_day_str = #{monthDayStr},</if>
+        </trim>
+        where full_date = #{fullDate}
+    </update>
+
+    <delete id="deleteMesDimTdDateByFullDate" parameterType="String">
+        delete from mes_dim_td_date where full_date = #{fullDate}
+    </delete>
+
+    <delete id="deleteMesDimTdDateByFullDates" parameterType="String">
+        delete from mes_dim_td_date where full_date in 
+        <foreach item="fullDate" collection="array" open="(" separator="," close=")">
+            #{fullDate}
+        </foreach>
+    </delete>
+</mapper>

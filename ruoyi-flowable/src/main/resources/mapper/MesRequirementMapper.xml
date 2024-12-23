@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesRequirementMapper">
+
+    <resultMap type="com.ruoyi.flowable.domain.dto.MesRequirement" id="MesRequirementResult">
+        <result property="requirementCode"    column="requirement_code"    />
+        <result property="requirementName"    column="requirement_name"    />
+        <result property="requirementModule"    column="requirement_module"    />
+        <result property="requirementDesc"    column="requirement_desc"    />
+        <result property="requirementOaId"    column="requirement_oa_id"    />
+        <result property="projectCode"    column="project_code"    />
+        <result property="status"    column="status"    />
+        <result property="releaseVersion"    column="release_version"    />
+        <result property="requirementUser"    column="requirement_user"    />
+        <result property="income"    column="income"    />
+        <result property="importantLevel"    column="important_level"    />
+        <result property="urgencyLevel"    column="urgency_level"    />
+        <result property="monthlyUsageFrequency"    column="monthly_usage_frequency"    />
+        <result property="requirementDocUrl"    column="requirement_doc_url"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUid"    column="create_uid"    />
+        <result property="createUname"    column="create_uname"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUid"    column="update_uid"    />
+        <result property="updateUname"    column="update_uname"    />
+        <result property="systemModule"    column="system_module"    />
+        <result property="requirementDept"    column="requirement_dept"    />
+        <result property="beginTime"    column="begin_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="requirementType"    column="requirement_type"    />
+        <result property="assignPerson"    column="assign_person"    />
+        <result property="deptId"    column="dept_id" />
+        <result property="attribute"    column="attribute" />
+        <result property="actualBeginTime"    column="actual_begin_time" />
+        <result property="actualEndTime"    column="actual_end_time" />
+        <result property="deliveryStatus"    column="delivery_status" />
+        <result property="minBeginTime"    column="min_begin_time" />
+        <result property="maxEndTime"    column="max_end_time" />
+        <result property="minActualBeginTime"    column="min_actual_begin_time" />
+        <result property="maxActualEndTime"    column="max_actual_end_time" />
+        <result property="projectName" column="project_name" />
+        <result property="reviewStatus" column="review_status" />
+        <result property="incomeType" column="income_type" />
+        <result property="reviewMode" column="review_mode" />
+    </resultMap>
+
+
+    <sql id="selectMesRequirementVo">
+        select mr.requirement_code, mr.requirement_name, mr.requirement_module, mr.requirement_desc,
+        mr.requirement_oa_id, mr.project_code, mr.status, mr.release_version, mr.requirement_user, mr.income,
+        mr.important_level, mr.urgency_level, mr.monthly_usage_frequency, mr.requirement_doc_url, mr.create_time,
+        mr.create_uid,mr.create_uname, mr.update_time, mr.update_uid, mr.update_uname, mr.system_module,
+        mr.requirement_dept, mr.begin_time, mr.end_time, mr.requirement_type, mr.assign_person, mr.dept_id,
+        mr.attribute,mr.actual_begin_time, mr.actual_end_time, mr.delivery_status,mr.review_status,mr.income_type,mr.review_mode,
+        mp.project_name
+        from mes_requirement mr left join mes_project mp
+        on mr.project_code = mp.project_code
+    </sql>
+
+    <select id="selectMesRequirementList" parameterType="com.ruoyi.flowable.domain.dto.MesRequirement" resultMap="MesRequirementResult">
+        <include refid="selectMesRequirementVo"/>
+        <where>
+            <if test="projectCode != null  and projectCode != ''"> and mr.project_code = #{projectCode}</if>
+            <if test="requirementCode != null  and requirementCode != ''"> and mr.requirement_code = #{requirementCode}</if>
+            <if test="requirementName != null  and requirementName != ''"> and mr.requirement_name like concat('%', #{requirementName}, '%')</if>
+            <if test="requirementModule != null  and requirementModule != ''"> and mr.requirement_module = #{requirementModule}</if>
+            <if test="requirementOaId != null  and requirementOaId != ''"> and mr.requirement_oa_id = #{requirementOaId}</if>
+            <if test="status != null  and status != ''"> and mr.status = #{status}</if>
+            <if test="releaseVersion != null  and releaseVersion != ''"> and mr.release_version = #{releaseVersion}</if>
+            <if test="createUname != null  and createUname != ''"> and mr.create_uname = #{createUname}</if>
+            <if test="systemModule != null  and systemModule != ''"> and mr.system_module = #{systemModule}</if>
+            <if test="attribute != null and attribute != ''"> and mr.attribute = #{attribute}</if>
+            <if test="endTime != null"> and mr.end_time between #{beginTime} and #{endTime}</if>
+            <if test="planBeginBeginTime != null"> and mr.begin_time between #{planBeginBeginTime} and #{planBeginEndTime}</if>
+            <if test="deptList != null and deptList.size() > 0">
+                and mr.dept_id in
+                <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="deliveryStatus != null  and deliveryStatus != ''"> and mr.delivery_status = #{deliveryStatus}</if>
+            <if test="reviewStatus != null  and reviewStatus != ''"> and mr.review_status = #{reviewStatus}</if>
+            <if test="incomeType != null  and incomeType != ''"> and mr.income_type = #{incomeType}</if>
+            <if test="reviewMode != null  and reviewMode != ''"> and mr.review_mode = #{reviewMode}</if>
+            <if test="requirementTypeList != null and requirementTypeList.size() > 0">
+                and mr.requirement_Type in
+                <foreach collection="requirementTypeList" index="index" item="item" open="(" separator="," close=")">
+                        #{item}
+                </foreach>
+            </if>
+        </where>
+        order by mr.urgency_level desc,mr.important_level, mr.begin_time desc, mr.end_time desc
+    </select>
+
+    <update id="updateMesRequirement">
+        update mes_requirement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="requirementName != null">requirement_name = #{requirementName},</if>
+            <if test="requirementModule != null">requirement_module = #{requirementModule},</if>
+            <if test="requirementDesc != null">requirement_desc = #{requirementDesc},</if>
+            <if test="requirementOaId != null">requirement_oa_id = #{requirementOaId},</if>
+            <if test="projectCode != null">project_code = #{projectCode},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="releaseVersion != null">release_version = #{releaseVersion},</if>
+            <if test="requirementUser != null">requirement_user = #{requirementUser},</if>
+            <if test="income != null">income = #{income},</if>
+            <if test="importantLevel != null">important_level = #{importantLevel},</if>
+            <if test="urgencyLevel != null">urgency_level = #{urgencyLevel},</if>
+            <if test="monthlyUsageFrequency != null">monthly_usage_frequency = #{monthlyUsageFrequency},</if>
+            <if test="requirementDocUrl != null">requirement_doc_url = #{requirementDocUrl},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createUid != null">create_uid = #{createUid},</if>
+            <if test="createUname != null">create_uname = #{createUname},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="updateUid != null">update_uid = #{updateUid},</if>
+            <if test="updateUname != null">update_uname = #{updateUname},</if>
+            <if test="systemModule != null">system_module = #{systemModule},</if>
+            <if test="requirementDept != null">requirement_dept = #{requirementDept},</if>
+            <if test="beginTime != null">begin_time = #{beginTime},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="requirementType != null">requirement_type = #{requirementType},</if>
+            <if test="assignPerson != null">assign_person = #{assignPerson},</if>
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="attribute != null">attribute = #{attribute},</if>
+            <if test="actualBeginTime != null">actual_begin_time = #{actualBeginTime},</if>
+            <if test="actualEndTime != null">actual_end_time = #{actualEndTime},</if>
+            <if test="deliveryStatus != null">delivery_status = #{deliveryStatus},</if>
+            <if test="reviewStatus != null">review_status = #{reviewStatus},</if>
+            <if test="incomeType != null">income_type = #{incomeType},</if>
+            <if test="reviewMode != null">review_mode = #{reviewMode},</if>
+        </trim>
+        where requirement_code = #{requirementCode}
+    </update>
+
+    <select id="selectOneByRequirementCodeDesc" resultMap="MesRequirementResult">
+        <include refid="selectMesRequirementVo"/>
+        order by requirement_code desc limit 1
+    </select>
+
+    <select id="countByName" resultType="int">
+        select count(1) from mes_requirement
+        <where>
+            requirement_name = #{requirementName}
+            <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
+            <if test="requirementCode != null  and requirementCode != ''"> and requirement_code != #{requirementCode}</if>
+        </where>
+    </select>
+
+    <select id="getRequirementCodes" resultMap="MesRequirementResult">
+        select requirement_code, requirement_name from mes_requirement
+        <where>
+            <if test="deptList != null and deptList.size() > 0">
+                and dept_id in
+                <foreach collection="deptList " index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="projectCode != null and projectCode != ''"> and project_code = #{projectCode}</if>
+        </where>
+        order by requirement_code desc
+    </select>
+    <select id="generateReleaseDocument" resultType="com.ruoyi.flowable.domain.vo.MesRequirementVo">
+        select requirement_code, requirement_name, requirement_user, requirement_dept, assign_person developers, release_version, create_uid
+        from mes_requirement mr
+        <where>
+            requirement_code in
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
+        order by requirement_code desc
+    </select>
+
+    <select id="getRequirementsByUserName" resultMap="MesRequirementResult">
+        select * from mes_requirement mr
+        <where>
+            <if test="assignPerson != null and assignPerson != ''"> and assign_person like concat('%', #{assignPerson}, '%')</if>
+            <if test="endTime != null"> and end_time >= #{endTime}</if>
+            AND status != 'Canceled'
+            AND `attribute` = 'requirement'
+        </where>
+        order by requirement_code desc
+    </select>
+
+    <select id="selectTimeEndpointForProject" resultMap="MesRequirementResult">
+        select min(begin_time) min_begin_time, min(actual_begin_time) min_actual_begin_time, max(end_time) max_end_time,max(actual_end_time) max_actual_end_time
+        from mes_requirement
+        <where>
+            <if test="projectCode != null and projectCode != ''"> and project_code = #{projectCode}</if>
+        </where>
+    </select>
+
+</mapper>

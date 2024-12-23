@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesWorkTimeMapper">
+
+    <resultMap type="com.ruoyi.flowable.domain.dto.MesWorkTime" id="MesWorkTimeResult">
+        <result property="id"    column="id"    />
+        <result property="workDate"    column="work_date"    />
+        <result property="weekOfYear"    column="week_of_year"    />
+        <result property="workHour"    column="work_hour"    />
+        <result property="workCode"    column="work_code"    />
+        <result property="workType"    column="work_type"    />
+        <result property="businessDept"    column="business_dept"    />
+        <result property="periodType"    column="period_type"    />
+        <result property="workDesc"    column="work_desc"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUid"    column="create_uid"    />
+        <result property="createUname"    column="create_uname"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUid"    column="update_uid"    />
+        <result property="updateUname"    column="update_uname"    />
+        <result property="workUser"    column="work_user"    />
+        <result property="taskName" column="task_name" />
+        <result property="dailyWorkHour" column="daily_work_hour" />
+        <result property="weeklyWorkHour" column="weekly_work_hour" />
+        <result property="monday" column="monday" />
+        <result property="tuesday" column="tuesday" />
+        <result property="wednesday" column="wednesday" />
+        <result property="thursday" column="thursday" />
+        <result property="friday" column="friday" />
+        <result property="saturday" column="saturday" />
+        <result property="sunday" column="sunday" />
+        <result property="totalHour" column="total_hour" />
+        <result property="maxWorkTime"    column="max_work_time" />
+    </resultMap>
+
+    <sql id="selectMesWorkTimeVo">
+        select id, work_date, week_of_year, work_hour, work_code, work_type, business_dept, period_type, work_desc, create_time, create_uid, create_uname, update_time, update_uid, update_uname, work_user from mes_work_time
+    </sql>
+
+    <select id="selectMesWorkTimeList" parameterType="com.ruoyi.flowable.domain.dto.MesWorkTime" resultMap="MesWorkTimeResult">
+        select mwt.id, mwt.work_date, mwt.week_of_year, mwt.work_hour, mwt.work_code, mwt.work_type, mwt.business_dept, mwt.period_type, mwt.work_desc, mwt.create_time, mwt.create_uid, mwt.create_uname, mwt.update_time, mwt.update_uid, mwt.update_uname, su.user_name work_user,
+        mrt.task_name
+        from mes_work_time mwt
+        left join sys_user su on mwt.work_user = su.user_name
+        left join mes_requirement_task mrt
+        on mwt.work_code  = mrt.task_code
+        left join mes_requirement mr
+        on mrt.requirement_code  = mr.requirement_code
+        <where>
+            <if test="workDate != null "> and work_date = #{workDate}</if>
+            <if test="weekOfYear != null  and weekOfYear != ''"> and week_of_year = #{weekOfYear}</if>
+            <if test="workHour != null  and workHour != ''"> and work_hour = #{workHour}</if>
+            <if test="workCode != null  and workCode != ''"> and work_code = #{workCode}</if>
+            <if test="workType != null  and workType != ''"> and work_type = #{workType}</if>
+            <if test="businessDept != null  and businessDept != ''"> and business_dept = #{businessDept}</if>
+            <if test="periodType != null  and periodType != ''"> and period_type = #{periodType}</if>
+            <if test="workDesc != null  and workDesc != ''"> and work_desc = #{workDesc}</if>
+            <if test="workUser != null  and workUser != ''"> and work_user = #{workUser}</if>
+        </where>
+        order by work_user, work_date desc, work_hour desc
+    </select>
+
+    <select id="selectDailyCompleteTimeCardList" resultMap="MesWorkTimeResult">
+        select work_date ,mwt.work_user, sum(ifnull(mwt.work_hour,0)) as daily_work_hour
+        from sys_user su
+        left join mes_work_time mwt on su.user_name = mwt.work_user
+        where period_type in ('正常','请假')
+        and work_date = #{workDate}
+        group by mwt.work_user
+        having sum(work_hour) >= 8
+    </select>
+
+    <select id="selectWeeklyCompleteTimeCardList" resultMap="MesWorkTimeResult">
+        select mwt.work_user, sum(ifnull(mwt.work_hour,0)) as weekly_work_hour
+        from sys_user su
+        left join mes_work_time mwt
+        on su.user_name = mwt.work_user
+        where period_type in ('正常','请假')
+        <if test="weeklyWorkDateList != null and weeklyWorkDateList.size() > 0">
+            and work_date in
+            <foreach collection="weeklyWorkDateList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        group by mwt.work_user
+        having sum(work_hour) >= #{weeklyWorkHour};
+    </select>
+
+    <select id="selectTimeCardListForOwn" resultMap="MesWorkTimeResult">
+        SELECT mwt.create_uname ,mwt.work_code, mwt.week_of_year, mwt.work_desc, mrt.task_name, mwt.business_dept, mwt.period_type, mwt.work_type,
+        CASE WHEN WEEKDAY(work_date) = 0 THEN mwt.work_hour ELSE null END AS monday,
+        CASE WHEN WEEKDAY(work_date) = 1 THEN mwt.work_hour ELSE null END AS tuesday,
+        CASE WHEN WEEKDAY(work_date) = 2 THEN mwt.work_hour ELSE null END AS wednesday,
+        CASE WHEN WEEKDAY(work_date) = 3 THEN mwt.work_hour ELSE null END AS thursday,
+        CASE WHEN WEEKDAY(work_date) = 4 THEN mwt.work_hour ELSE null END AS friday,
+        CASE WHEN WEEKDAY(work_date) = 5 THEN mwt.work_hour ELSE null END AS saturday,
+        CASE WHEN WEEKDAY(work_date) = 6 THEN mwt.work_hour ELSE null END AS sunday
+        from mes_work_time mwt
+        left join sys_user su on mwt.work_user = su.user_name
+        left join mes_requirement_task mrt
+        on mwt.work_code = mrt.task_code
+        left join mes_requirement mr
+        on mrt.requirement_code = mr.requirement_code
+        <where>
+            <if test="weekOfYear != null  and weekOfYear != ''">and mwt.week_of_year = #{weekOfYear}</if>
+            <if test="workUser != null  and workUser != ''">and mwt.work_user = #{workUser}</if>
+        </where>
+        order by CONVERT(mwt.create_uname using GBK),week_of_year
+    </select>
+
+    <select id="selectTotalTimeCardListForOwn" resultMap="MesWorkTimeResult">
+        SELECT period_type,
+        SUM(CASE WHEN WEEKDAY(work_date) = 0 THEN mwt.work_hour ELSE 0 END) AS monday,
+        SUM(CASE WHEN WEEKDAY(work_date) = 1 THEN mwt.work_hour ELSE 0 END) AS tuesday,
+        SUM(CASE WHEN WEEKDAY(work_date) = 2 THEN mwt.work_hour ELSE 0 END) AS wednesday,
+        SUM(CASE WHEN WEEKDAY(work_date) = 3 THEN mwt.work_hour ELSE 0 END) AS thursday,
+        SUM(CASE WHEN WEEKDAY(work_date) = 4 THEN mwt.work_hour ELSE 0 END) AS friday,
+        SUM(CASE WHEN WEEKDAY(work_date) = 5 THEN mwt.work_hour ELSE 0 END) AS saturday,
+        SUM(CASE WHEN WEEKDAY(work_date) = 6 THEN mwt.work_hour ELSE 0 END) AS sunday
+        from mes_work_time mwt
+        left join sys_user su on mwt.work_user = su.user_name
+        left join mes_requirement_task mrt
+        on mwt.work_code  = mrt.task_code
+        left join mes_requirement mr
+        on mrt.requirement_code = mr.requirement_code
+        <where>
+            <if test="weekOfYear != null  and weekOfYear != ''"> and mwt.week_of_year = #{weekOfYear}</if>
+            <if test="workUser != null  and workUser != ''"> and mwt.work_user = #{workUser}</if>
+        </where>
+        GROUP BY mwt.period_type
+    </select>
+
+    <select id="selectWorkTypeDuration" resultMap="MesWorkTimeResult">
+        select work_type,sum(work_hour) as total_hour
+        from mes_work_time mwt
+        <where>
+            <if test="weekOfYear != null  and weekOfYear != ''">and mwt.week_of_year = #{weekOfYear}</if>
+            <if test="workUser != null  and workUser != ''">and mwt.work_user = #{workUser}</if>
+        </where>
+        group by work_type
+        having work_type is not null
+    </select>
+
+    <select id="selectWeeklyTotalTime" resultMap="MesWorkTimeResult">
+        select sum(ifnull(mwt.work_hour,0)) as total_hour
+        from mes_work_time mwt
+        <where>
+            <if test="weekOfYear != null  and weekOfYear != ''">and mwt.week_of_year = #{weekOfYear}</if>
+            <if test="workUser != null  and workUser != ''">and mwt.work_user = #{workUser}</if>
+        </where>
+        <if test="groupFieldList != null and groupFieldList.size() > 0">
+            GROUP BY
+            <foreach item="field" collection="groupFieldList" separator=",">
+                ${field}
+            </foreach>
+        </if>
+    </select>
+
+    <select id="selectMaxWorkTime" resultMap="MesWorkTimeResult">
+        select max(work_date) as max_work_time
+        from mes_work_time
+        <where>
+            <if test="workCode != null and workCode != ''"> and work_code = #{workCode}</if>
+        </where>
+    </select>
+
+</mapper>

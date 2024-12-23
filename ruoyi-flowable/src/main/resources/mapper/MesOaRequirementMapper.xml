@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesOaRequirementMapper">
+
+    <resultMap type="com.ruoyi.flowable.domain.dto.MesOaRequirement" id="MesOaRequirementResult">
+        <result property="requirementOaId"    column="requirement_oa_id"    />
+        <result property="requirementName"    column="requirement_name"    />
+        <result property="requirementDesc"    column="requirement_desc"    />
+        <result property="systemModule"    column="system_module"    />
+        <result property="requirementUser"    column="requirement_user"    />
+        <result property="requirementDept"    column="requirement_dept"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="requirementType"    column="requirement_type"    />
+        <result property="requirementGrade"    column="requirement_grade"    />
+        <result property="income"    column="income"    />
+        <result property="businessDept"    column="business_dept"    />
+        <result property="responsibleUname"    column="responsible_uname"    />
+        <result property="responsibleUid"    column="responsible_uid"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createUid"    column="create_uid"    />
+        <result property="createUname"    column="create_uname"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="updateUid"    column="update_uid"    />
+        <result property="updateUname"    column="update_uname"    />
+        <result property="status"    column="status"    />
+    </resultMap>
+
+    <sql id="selectMesOaRequirementVo">
+        select requirement_oa_id, requirement_name, requirement_desc, system_module, requirement_user, requirement_dept, file_name, file_path, requirement_type, requirement_grade, income, business_dept, responsible_uname, responsible_uid, create_time, create_uid, create_uname, update_time, update_uid, update_uname, status from mes_oa_requirement
+    </sql>
+
+    <select id="selectMesOaRequirementList" parameterType="com.ruoyi.flowable.domain.dto.MesOaRequirement" resultMap="MesOaRequirementResult">
+        <include refid="selectMesOaRequirementVo"/>
+        <where>
+            <if test="requirementName != null  and requirementName != ''"> and requirement_name like concat('%', #{requirementName}, '%')</if>
+            <if test="requirementDesc != null  and requirementDesc != ''"> and requirement_desc = #{requirementDesc}</if>
+            <if test="systemModule != null  and systemModule != ''"> and system_module = #{systemModule}</if>
+            <if test="requirementUser != null  and requirementUser != ''"> and requirement_user = #{requirementUser}</if>
+            <if test="requirementDept != null  and requirementDept != ''"> and requirement_dept = #{requirementDept}</if>
+            <if test="fileName != null  and fileName != ''"> and file_name = #{fileName}</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="requirementType != null  and requirementType != ''"> and requirement_type = #{requirementType}</if>
+            <if test="requirementGrade != null  and requirementGrade != ''"> and requirement_grade = #{requirementGrade}</if>
+            <if test="income != null  and income != ''"> and income = #{income}</if>
+            <if test="businessDept != null  and businessDept != ''"> and business_dept = #{businessDept}</if>
+            <if test="responsibleUname != null  and responsibleUname != ''"> and responsible_uname like concat('%', #{responsibleUname}, '%')</if>
+            <if test="responsibleUid != null  and responsibleUid != ''"> and responsible_uid = #{responsibleUid}</if>
+            <if test="createUid != null  and createUid != ''"> and create_uid = #{createUid}</if>
+            <if test="createUname != null  and createUname != ''"> and create_uname like concat('%', #{createUname}, '%')</if>
+            <if test="updateUid != null  and updateUid != ''"> and update_uid = #{updateUid}</if>
+            <if test="updateUname != null  and updateUname != ''"> and update_uname like concat('%', #{updateUname}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+
+</mapper>

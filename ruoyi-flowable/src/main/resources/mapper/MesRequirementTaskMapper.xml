@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.flowable.mapper.MesRequirementTaskMapper">
+
+    <resultMap type="com.ruoyi.flowable.domain.dto.MesRequirementTask" id="MesRequirementTaskResult">
+        <result property="taskCode"    column="task_code"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="requirementCode"    column="requirement_code"    />
+        <result property="developers"    column="developers"    />
+        <result property="beginTime"    column="begin_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="status"    column="status"    />
+        <result property="taskType"    column="task_type"    />
+        <result property="createUname"    column="create_uname"    />
+        <result property="createUid"    column="create_uid"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateUname"    column="update_uname"    />
+        <result property="updateUid"    column="update_uid"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="releaseVersion"    column="release_version"    />
+        <result property="requirementName"    column="requirement_name"    />
+        <result property="actualBeginTime"    column="actual_begin_time" />
+        <result property="actualEndTime"    column="actual_end_time" />
+        <result property="deliveryStatus"    column="delivery_status" />
+        <result property="minBeginTime"    column="min_begin_time" />
+        <result property="maxEndTime"    column="max_end_time" />
+        <result property="minActualBeginTime"    column="min_actual_begin_time" />
+        <result property="maxActualEndTime"    column="max_actual_end_time" />
+    </resultMap>
+
+    <sql id="selectMesRequirementTaskVo">
+        select task_code, task_name, requirement_code, developers, begin_time, end_time, status, task_type,
+        create_uname, create_uid, create_time, update_uname, update_uid, update_time, dept_id, release_version, actual_begin_time, actual_end_time, delivery_status
+        from mes_requirement_task
+    </sql>
+
+<!--    <select id="selectMesRequirementTaskList" parameterType="com.ruoyi.flowable.domain.dto.MesRequirementTask" resultMap="MesRequirementTaskResult">-->
+<!--        <include refid="selectMesRequirementTaskVo"/>-->
+<!--        <where>-->
+<!--            <if test="taskName != null  and taskName != ''"> and task_name like concat('%', #{taskName}, '%')</if>-->
+<!--            <if test="requirementCode != null  and requirementCode != ''"> and requirement_code = #{requirementCode}</if>-->
+<!--            <if test="developers != null  and developers != ''"> and developers = #{developers}</if>-->
+<!--            <if test="beginTime != null "> and begin_time = #{beginTime}</if>-->
+<!--            <if test="endTime != null "> and end_time = #{endTime}</if>-->
+<!--            <if test="status != null  and status != ''"> and status = #{status}</if>-->
+<!--            <if test="taskType != null  and taskType != ''"> and task_type = #{taskType}</if>-->
+<!--            <if test="createUname != null  and createUname != ''"> and create_uname like concat('%', #{createUname}, '%')</if>-->
+<!--            <if test="createUid != null  and createUid != ''"> and create_uid = #{createUid}</if>-->
+<!--            <if test="updateUname != null  and updateUname != ''"> and update_uname like concat('%', #{updateUname}, '%')</if>-->
+<!--            <if test="updateUid != null  and updateUid != ''"> and update_uid = #{updateUid}</if>-->
+<!--            <if test="systemModule != null  and systemModule != ''"> and system_module = #{systemModule}</if>-->
+<!--        </where>-->
+<!--        order by task_code desc-->
+<!--    </select>-->
+
+    <select id="selectMesRequirementTaskList" parameterType="com.ruoyi.flowable.domain.dto.MesRequirementTask" resultMap="MesRequirementTaskResult">
+        select mrt.task_code, mrt.task_name, mrt.requirement_code, su.nick_name assign_person, mrt.developers, mrt.begin_time, mrt.end_time, mrt.status, mrt.task_type, mrt.create_uname, mrt.create_uid, mrt.create_time, mrt.update_uname, mrt.update_uid, mrt.update_time, mrt.dept_id, mrt.release_version, mrt.actual_begin_time,mrt.actual_end_time, mrt.delivery_status,
+        mr.requirement_name
+        from mes_requirement_task mrt
+        left join sys_user su on mrt.developers = su.user_name
+        left join mes_requirement mr on mr.requirement_code = mrt.requirement_code
+        <where>
+            <if test="taskCode != null  and taskCode != ''"> and mrt.task_code = #{taskCode} </if>
+            <if test="taskName != null  and taskName != ''"> and mrt.task_name like concat('%', #{taskName}, '%')</if>
+            <if test="requirementCode != null  and requirementCode != ''"> and mrt.requirement_code = #{requirementCode}</if>
+            <if test="developers != null  and developers != ''"> and mrt.developers = #{developers}</if>
+            <if test="beginTime != null "> and mrt.begin_time = #{beginTime}</if>
+            <if test="endTime != null "> and mrt.end_time = #{endTime}</if>
+            <if test="status != null  and status != ''"> and mrt.status = #{status}</if>
+            <if test="taskType != null  and taskType != ''"> and mrt.task_type = #{taskType}</if>
+            <if test="createUname != null  and createUname != ''"> and mrt.create_uname like concat('%', #{createUname}, '%')</if>
+            <if test="createUid != null  and createUid != ''"> and mrt.create_uid = #{createUid}</if>
+            <if test="updateUname != null  and updateUname != ''"> and mrt.update_uname like concat('%', #{updateUname}, '%')</if>
+            <if test="updateUid != null  and updateUid != ''"> and mrt.update_uid = #{updateUid}</if>
+            <if test="deptList != null and deptList.size() > 0">
+                and mrt.dept_id in
+                <foreach collection="deptList" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="deliveryStatus != null  and deliveryStatus != ''"> and mrt.delivery_status = #{deliveryStatus}</if>
+        </where>
+        order by mrt.begin_time desc, mrt.end_time desc
+    </select>
+
+    <select id="selectMesRequirementTaskListForTimeCard" parameterType="com.ruoyi.flowable.domain.dto.MesRequirementTask" resultMap="MesRequirementTaskResult">
+        select mrt.task_code, mrt.task_name, mrt.requirement_code, su.nick_name assign_person, mrt.developers, mrt.begin_time, mrt.end_time, mrt.status, mrt.task_type, mrt.create_uname, mrt.create_uid, mrt.create_time, mrt.update_uname, mrt.update_uid, mrt.update_time, mrt.dept_id, mrt.release_version,
+        mr.requirement_name
+        from mes_requirement_task mrt
+        left join sys_user su on mrt.developers = su.user_name
+        left join mes_requirement mr on mr.requirement_code = mrt.requirement_code
+        <where>
+            <if test="developers != null  and developers != ''"> and mrt.developers = #{developers}</if>
+            <if test="attribute != null  and attribute != ''"> and mr.attribute = #{attribute}</if>
+            <if test="actualEndTime != null"> and (mrt.actual_end_time >= #{actualEndTime} OR mrt.actual_end_time IS NULL) </if>
+            <if test="actualBeginTime != null"> and mrt.actual_begin_time &lt;= #{actualBeginTime} </if>
+            AND (mrt.status != 'Canceled' AND mrt.status != 'UnStart')
+        </where>
+        order by mrt.begin_time desc, mrt.end_time desc
+    </select>
+
+    <select id="selectOneByRequirementCodeDesc" resultMap="MesRequirementTaskResult">
+        <include refid="selectMesRequirementTaskVo"/>
+        order by task_code desc limit 1
+    </select>
+
+    <select id="countByName" resultType="int">
+        select count(1) from mes_requirement_task
+        <where>
+            task_name = #{taskName}
+            <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
+        </where>
+    </select>
+
+    <select id="getTaskCodes" resultMap="MesRequirementTaskResult">
+        select task_code, task_name from mes_requirement_task
+        <where>
+            <if test="deptId != null  and deptId != ''"> and dept_id = #{deptId}</if>
+        </where>
+        order by task_code desc
+    </select>
+
+    <select id="deleteByRequirementCode" parameterType="String">
+       delete from mes_requirement_task where requirement_code in
+        <foreach collection="requirementCodes" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectTimeEndpoint" resultMap="MesRequirementTaskResult">
+        select min(begin_time) min_begin_time, min(actual_begin_time) min_actual_begin_time, max(end_time) max_end_time,max(actual_end_time) max_actual_end_time
+        from mes_requirement_task
+        <where>
+            <if test="requirementCode != null and requirementCode != ''"> and requirement_code = #{requirementCode}</if>
+        </where>
+    </select>
+</mapper>
